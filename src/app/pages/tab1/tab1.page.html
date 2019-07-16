@@ -1,15 +1,39 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      Tab One
+      Vista General
     </ion-title>
-    <ion-buttons slot="end">
+    <!-- <ion-buttons slot="end">
       <ion-button (click)="cerrarSesion()">
         <ion-icon slot="icon-only" name="log-out"></ion-icon>
       </ion-button>
-    </ion-buttons>
+    </ion-buttons> -->
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-segment scrollable>
+    <ion-segment-button checked>
+      <ion-label>Mi Zona</ion-label>
+    </ion-segment-button>
+    <ion-segment-button>
+      <ion-label>Municipio</ion-label>
+    </ion-segment-button>
+    <ion-segment-button>
+      <ion-label>Departamento</ion-label>
+    </ion-segment-button>
+    <ion-segment-button>
+      <ion-label>Nacional</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <ion-card>
+    <img src="assets/grafico.png" />
+    <ion-card-header>
+      <ion-card-title>Estado de reportes dep. Guatemala</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+     *Esta grafica es una version preliminar
+    </ion-card-content>
+  </ion-card>
 </ion-content>

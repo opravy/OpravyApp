@@ -1,9 +1,31 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      Tab Three
+      Mi Usuario
     </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cerrarSesion()">
+        <ion-icon slot="icon-only" name="log-out"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content></ion-content>
+<ion-content>
+  <ion-card>
+    <img src="assets/user.jpeg" />
+    <ion-card-header>
+      <ion-card-title>Brandon Torres</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>Residente de zona 7</p>
+      <p>Numero de reportes creados: 2</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="saveNote()" color="tertiary">
+        <ion-icon name="create"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

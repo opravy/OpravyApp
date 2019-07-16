@@ -1,9 +1,45 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      Tab Two
+      Reportes
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content></ion-content>
+<ion-content>
+  <ion-card>
+    <img src="assets/cortoluz.jpg" />
+    <ion-card-header>
+      <ion-card-title>Corte de luz</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      La luz se fue de la zona 21 por la barata desde las 3 de la tarde ademas que hay corto
+      circuito en un poste.
+    </ion-card-content>
+    <ion-chip color="danger">
+      <ion-icon name="bonfire" color="danger"></ion-icon>
+      <ion-label>Prioridad 5/5</ion-label>
+    </ion-chip>
+  </ion-card>
+
+  <ion-card>
+    <img src="assets/hoyocalle.png" />
+    <ion-card-header>
+      <ion-card-title>Calle dañada</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      En la reformita se hizo un gran hoyo en la calle, cuando llueve afecta mucho el transito
+      por el lugar.
+    </ion-card-content>
+    <ion-chip color="danger">
+      <ion-icon name="bonfire" color="danger"></ion-icon>
+      <ion-label>Prioridad 5/5</ion-label>
+    </ion-chip>
+  </ion-card>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button>
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
