@@ -1,9 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="regresarHome()">
-        <ion-icon slot="icon-only" name="arrow-round-back"></ion-icon>
-      </ion-button>
+      <ion-back-button routerLink="/opravy/reportes" routerDirection="backward"></ion-back-button>
     </ion-buttons>
     <ion-title>Agregar Reporte</ion-title>
   </ion-toolbar>
@@ -15,15 +13,16 @@
     <ion-input [(ngModel)]="titulo"></ion-input>
   </ion-item>
 
-  <ion-item>
-      <ion-label position="floating">Selecciona la fecha del incidente</ion-label>
-      <ion-datetime [(ngModel)]="fechaLim" displayFormat="DD/MM/YYYY" min="2000-01-01" max="2099-12-31">
-      </ion-datetime>
-  </ion-item>
+  <ion-textarea [(ngModel)]="contenido" autoGrow="true" spellcheck="true" wrap="soft" class="note-content"
+    placeholder="Describe el problema">
+  </ion-textarea>
 
   <ion-item>
-    <ion-label position="stacked">Categorias<ion-text color="danger">*</ion-text></ion-label>
-    <ion-input required type="text"></ion-input>
+    <ion-label position="stacked">Prioridad</ion-label>
+    <ion-range min="1" max="5" step="1">
+      <ion-icon size="small" slot="start" name="arrow-round-down"></ion-icon>
+      <ion-icon slot="end" name="arrow-round-up"></ion-icon>
+    </ion-range>
   </ion-item>
 
   <ion-item>
@@ -38,14 +37,11 @@
     </ion-select>
   </ion-item>
 
-  <ion-textarea [(ngModel)]="contenido" autoGrow="true" spellcheck="true" wrap="soft" class="note-content" placeholder="...dime, ¿que piensas?">
-  </ion-textarea>
-
-  <img src="assets/map.jpg">
+  <div id="mapid"></div>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-      <ion-fab-button (click)="saveNote()" color="tertiary">
-          <ion-icon name="save"></ion-icon>
-      </ion-fab-button>
-    </ion-fab>
+    <ion-fab-button>
+      <ion-icon name="save"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

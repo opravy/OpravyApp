@@ -8,9 +8,16 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+
 import { AngularFireAuth, AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireModule } from '@angular/fire';
+import { AngularFireDatabaseModule } from '@angular/fire/database';
+import { AngularFireStorageModule } from '@angular/fire/storage';
+
 import { environment } from 'src/environments/environment';
+
+import { Camera } from "@ionic-native/camera/ngx";
+import { File } from "@ionic-native/file/ngx";
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,9 +27,13 @@ import { environment } from 'src/environments/environment';
     IonicModule.forRoot(),
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    AngularFireDatabaseModule,
+    AngularFireStorageModule
   ],
   providers: [
+    File,
+    Camera,
     StatusBar,
     SplashScreen,
     AngularFireAuth,

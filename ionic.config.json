@@ -1,5 +1,7 @@
 {
   "name": "opravyapp",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }
