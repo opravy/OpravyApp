@@ -6,5 +6,6 @@ export interface Report{
     location: {
         latitude: number,
         longitude: number
-    }
+    },
+    status: string
 }
