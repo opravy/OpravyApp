@@ -28,12 +28,30 @@
   </ion-segment>
 
   <ion-card>
-    <img src="assets/grafico.png" />
     <ion-card-header>
-      <ion-card-title>Estado de reportes dep. Guatemala</ion-card-title>
+      Bar Chart
     </ion-card-header>
     <ion-card-content>
-     *Esta grafica es una version preliminar
+      <canvas #barCanvas></canvas>
     </ion-card-content>
   </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      Doughnut Chart
+    </ion-card-header>
+    <ion-card-content>
+      <canvas #doughnutCanvas></canvas>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      Line Chart
+    </ion-card-header>
+    <ion-card-content>
+      <canvas #lineCanvas></canvas>
+    </ion-card-content>
+  </ion-card>
+
 </ion-content>
