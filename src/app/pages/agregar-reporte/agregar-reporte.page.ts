@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Geolocation } from "@ionic-native/geolocation";
 import * as L from 'leaflet'
-import { AlertController, LoadingController } from '@ionic/angular';
+import { AlertController, LoadingController, ActionSheetController } from '@ionic/angular';
 import { Report } from "../../models/report.model";
 import { DataService } from 'src/app/services/data.service';
 import { ImageService } from 'src/app/services/image.service';
+import { AngularFireUploadTask } from '@angular/fire/storage';
+import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 
 @Component({
   selector: 'app-agregar-reporte',
@@ -24,14 +26,20 @@ export class AgregarReportePage implements OnInit {
     location: {
       latitude: this.ltd,
       longitude: this.lng
-    }
+    },
+    status: 'pending'
   };
+  progress: any;
 
   constructor(
     private alert: AlertController,
     private loading: LoadingController,
+    private actionSheet: ActionSheetController,
     private _dataService: DataService,
-    private _imageService: ImageService
+    private _imageService: ImageService,
+    private task: AngularFireUploadTask,
+    private camera: Camera,
+    private imagePicker
   ) { }
 
   ngOnInit() {
@@ -53,6 +61,33 @@ export class AgregarReportePage implements OnInit {
       message: message,
       buttons: [buttons]
     })
+  }
+
+  async showActionSheet() {
+    const actionSheet = await this.actionSheet.create({
+      header: 'Opciones de imagen',
+      buttons: [{
+        text: 'Tomar foto',
+        icon: 'camera',
+        handler: () => {
+          this.takePicture();
+        }
+      }, {
+        text: 'Seleccionar de la galería',
+        icon: 'image',
+        handler: () => {
+          this.openImagePicker();
+        }
+      }, {
+        text: 'Cancelar',
+        icon: 'close',
+        role: 'cancel',
+        handler: () => {
+          console.log('Cancel clicked');
+        }
+      }]
+    });
+    await actionSheet.present();
   }
 
   loadMap(latitude, longitude) {
@@ -80,24 +115,57 @@ export class AgregarReportePage implements OnInit {
   async saveReport() {
     const loading = await this.loading.create({
       spinner: 'circles',
-      message: 'Saving...'
-    });
+      message: 'Guardando...'
+    })
     await loading.present();
 
-    this._dataService.uploadImage(this.report.image).then((snapshot: any) => {
-      let uploadedImage: any = snapshot.downloadURL;
+    this._dataService.uploadImage(this.report.image).then((result: any) => {
+      this.task = result;
+      let uploadedImage = result.downloadURL;
       this.report.image = uploadedImage;
 
       this._dataService.addReport(this.report).then((data) => {
         this.loading.dismiss();
-      })
-    })
+      });
+    });
   }
 
-  selectImage() {
-    this._imageService.selectImage()
-      .then((data) => {
-        this.report.image = data;
+  async captureImage() {
+    const options: CameraOptions = {
+      quality: 100,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE,
+      sourceType: this.camera.PictureSourceType.CAMERA
+    }
+
+    return await this.camera.getPicture(options)
+  }
+
+  async takePicture() {
+    const base64 = await this.captureImage();
+    this.report.image = base64;
+  }
+
+  openImagePicker() {
+    this.imagePicker.hasReadPermission().then(
+      (result) => {
+        if (result == false) {
+          this.imagePicker.requestReadPermission();
+        }
+        else if (result == true) {
+          this.imagePicker.getPictures({
+            maximumImagesCount: 1
+          }).then(
+            (results) => {
+              for (var i = 0; i < results.length; i++) {
+                this._dataService.uploadImage(results[i]);
+              }
+            }, (err) => console.log(err)
+          );
+        }
+      }, (err) => {
+        console.log(err);
       });
   }
 

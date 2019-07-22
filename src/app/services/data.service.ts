@@ -3,7 +3,7 @@ import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/fire
 import { Report } from '../models/report.model';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import * as firebase from 'firebase';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +13,11 @@ export class DataService {
   private reportsCollection: AngularFirestoreCollection<Report>;
   private reports: Observable<Report[]>;
 
-  constructor(private db: AngularFirestore) {
-    this.reportsCollection = db.collection<Report>('toDos');
+  constructor(
+    private db: AngularFirestore,
+    private afStorage: AngularFireStorage
+  ) {
+    this.reportsCollection = db.collection<Report>('Reports');
 
     this.reports = this.reportsCollection.snapshotChanges().pipe(
       map(actions => {
@@ -35,22 +38,9 @@ export class DataService {
     return this.reportsCollection.add(report);
   }
 
-  uploadImage(imageString): Promise<any> {
-    let image: string = 'movie-' + new Date().getTime() + '.jpg',
-      storageRef: any,
-      parseUpload: any;
-
-    return new Promise((resolve, reject) => {
-      storageRef = firebase.storage().ref('images/' + image);
-      parseUpload = storageRef.putString(imageString, 'data_url');
-
-      parseUpload.on('state_changed', (_snapshot) => {},
-        (_err) => {
-          reject(_err);
-        },
-        (success) => {
-          resolve(parseUpload.snapshot);
-        });
-    });
+  uploadImage(image) {
+    const filePath = `report_image_${ new Date().getTime() }.jpg`
+    image = 'data:image/jpg;base64,' + image;
+    return this.afStorage.ref(filePath).putString(image, 'data_url');
   }
 }
