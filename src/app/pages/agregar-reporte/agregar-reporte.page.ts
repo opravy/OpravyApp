@@ -1,20 +1,38 @@
 import { Component, OnInit } from '@angular/core';
 import { Geolocation } from "@ionic-native/geolocation";
 import * as L from 'leaflet'
-import { AlertController } from '@ionic/angular';
-import { Message } from '@angular/compiler/src/i18n/i18n_ast';
+import { AlertController, LoadingController } from '@ionic/angular';
+import { Report } from "../../models/report.model";
+import { DataService } from 'src/app/services/data.service';
+import { ImageService } from 'src/app/services/image.service';
 
 @Component({
   selector: 'app-agregar-reporte',
   templateUrl: './agregar-reporte.page.html',
   styleUrls: ['./agregar-reporte.page.scss'],
+  providers: [DataService, ImageService]
 })
 export class AgregarReportePage implements OnInit {
 
   ltd: number = 14.634915;
   lng: number = -90.506882;
+  private report: Report = {
+    title: '',
+    description: '',
+    priority: 0,
+    image: '',
+    location: {
+      latitude: this.ltd,
+      longitude: this.lng
+    }
+  };
 
-  constructor(private alert: AlertController) { }
+  constructor(
+    private alert: AlertController,
+    private loading: LoadingController,
+    private _dataService: DataService,
+    private _imageService: ImageService
+  ) { }
 
   ngOnInit() {
     Geolocation.getCurrentPosition()
@@ -58,4 +76,29 @@ export class AgregarReportePage implements OnInit {
 
     mymap.on('click', onMapClick);
   }
+
+  async saveReport() {
+    const loading = await this.loading.create({
+      spinner: 'circles',
+      message: 'Saving...'
+    });
+    await loading.present();
+
+    this._dataService.uploadImage(this.report.image).then((snapshot: any) => {
+      let uploadedImage: any = snapshot.downloadURL;
+      this.report.image = uploadedImage;
+
+      this._dataService.addReport(this.report).then((data) => {
+        this.loading.dismiss();
+      })
+    })
+  }
+
+  selectImage() {
+    this._imageService.selectImage()
+      .then((data) => {
+        this.report.image = data;
+      });
+  }
+
 }

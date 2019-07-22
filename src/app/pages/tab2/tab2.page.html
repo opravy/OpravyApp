@@ -7,33 +7,34 @@
 </ion-header>
 
 <ion-content>
-  <ion-card>
-    <img src="assets/cortoluz.jpg" />
-    <ion-card-header>
-      <ion-card-title>Corte de luz</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      La luz se fue de la zona 21 por la barata desde las 3 de la tarde ademas que hay corto
-      circuito en un poste.
-    </ion-card-content>
-    <ion-chip color="danger">
-      <ion-icon name="bonfire" color="danger"></ion-icon>
-      <ion-label>Prioridad 5/5</ion-label>
-    </ion-chip>
-  </ion-card>
+  <ng-container *ngIf="!reports || reports.length == 0">
+    <div *ngFor="let i of [0, 1, 2]" padding>
+      <ion-skeleton-text></ion-skeleton-text>
+      <p>
+        <ion-skeleton-text class="fake-skeleton"></ion-skeleton-text>
+      </p>
+    </div>
+  </ng-container>
 
-  <ion-card>
-    <img src="assets/hoyocalle.png" />
+  <ion-card *ngFor="let report of reports">
+    <img [src]="report.image" />
     <ion-card-header>
-      <ion-card-title>Calle dañada</ion-card-title>
+      <ion-card-title>{{report.title}}</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      En la reformita se hizo un gran hoyo en la calle, cuando llueve afecta mucho el transito
-      por el lugar.
+      {{report.description}}
     </ion-card-content>
-    <ion-chip color="danger">
+    <ion-chip *ngIf="report.priority <= 2" color="success">
+        <ion-icon name="bonfire" color="danger"></ion-icon>
+        <ion-label>{{report.priority}}</ion-label>
+      </ion-chip>
+    <ion-chip *ngIf="report.priority == 3" color="warning">
+        <ion-icon name="bonfire" color="danger"></ion-icon>
+        <ion-label>{{report.priority}}</ion-label>
+      </ion-chip>
+    <ion-chip *ngIf="report.priority >= 4" color="danger">
       <ion-icon name="bonfire" color="danger"></ion-icon>
-      <ion-label>Prioridad 5/5</ion-label>
+      <ion-label>{{report.priority}}</ion-label>
     </ion-chip>
   </ion-card>
 

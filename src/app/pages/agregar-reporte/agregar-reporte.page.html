@@ -10,16 +10,18 @@
 <ion-content padding fullscreen>
   <ion-item>
     <ion-label position="floating">Título</ion-label>
-    <ion-input [(ngModel)]="titulo"></ion-input>
+    <ion-input [(ngModel)]="report.title"></ion-input>
   </ion-item>
 
-  <ion-textarea [(ngModel)]="contenido" autoGrow="true" spellcheck="true" wrap="soft" class="note-content"
-    placeholder="Describe el problema">
-  </ion-textarea>
+  <ion-item>
+    <ion-label position="floating">Descripción</ion-label>
+    <ion-textarea [(ngModel)]="report.description" autoGrow="true" spellcheck="true" wrap="soft" class="note-content">
+    </ion-textarea>
+  </ion-item>
 
   <ion-item>
     <ion-label position="stacked">Prioridad</ion-label>
-    <ion-range min="1" max="5" step="1">
+    <ion-range min="1" max="5" step="1" color="danger" [(ngModel)]="report.priority">
       <ion-icon size="small" slot="start" name="arrow-round-down"></ion-icon>
       <ion-icon slot="end" name="arrow-round-up"></ion-icon>
     </ion-range>
@@ -27,15 +29,10 @@
 
   <ion-item>
     <ion-label>Archivos</ion-label>
-    <ion-select interface="popover">
-      <ion-select-option value="nes">NES</ion-select-option>
-      <ion-select-option value="n64">Nintendo64</ion-select-option>
-      <ion-select-option value="ps">PlayStation</ion-select-option>
-      <ion-select-option value="genesis">Sega Genesis</ion-select-option>
-      <ion-select-option value="saturn">Sega Saturn</ion-select-option>
-      <ion-select-option value="snes">SNES</ion-select-option>
-    </ion-select>
+    <ion-input type="hidden" [(ngModel)]="report.image"></ion-input>
+    <img [src]="report.image">
   </ion-item>
+  <ion-button color="primary" expand="full" (click)="selectImage()"><ion-icon name="image" slot="start"></ion-icon>Seleccionar imagen</ion-button>
 
   <div id="mapid"></div>
 
