@@ -24,18 +24,26 @@
     <ion-card-content>
       {{report.description}}
     </ion-card-content>
-    <ion-chip *ngIf="report.priority <= 2" color="success">
-        <ion-icon name="bonfire" color="danger"></ion-icon>
-        <ion-label>{{report.priority}}</ion-label>
-      </ion-chip>
-    <ion-chip *ngIf="report.priority == 3" color="warning">
-        <ion-icon name="bonfire" color="danger"></ion-icon>
-        <ion-label>{{report.priority}}</ion-label>
-      </ion-chip>
-    <ion-chip *ngIf="report.priority >= 4" color="danger">
-      <ion-icon name="bonfire" color="danger"></ion-icon>
-      <ion-label>{{report.priority}}</ion-label>
+
+    <ion-chip *ngFor="let label of report.labels" color="{{label.color}}">
+      <ion-icon name="{{label.icon}}" color="{{label.color}}"></ion-icon>
+      <ion-label>{{label.label}}</ion-label>
     </ion-chip>
+
+    <ion-item>
+      <ion-chip *ngIf="report.priority <= 2" color="success">
+        <ion-icon name="bonfire" color="success"></ion-icon>
+        <ion-label>{{report.priority}}</ion-label>
+      </ion-chip>
+      <ion-chip *ngIf="report.priority == 3" color="warning">
+        <ion-icon name="bonfire" color="warning"></ion-icon>
+        <ion-label>{{report.priority}}</ion-label>
+      </ion-chip>
+      <ion-chip *ngIf="report.priority >= 4" color="danger">
+        <ion-icon name="bonfire" color="danger"></ion-icon>
+        <ion-label>{{report.priority}}</ion-label>
+      </ion-chip>
+    </ion-item>
   </ion-card>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">

@@ -28,16 +28,27 @@
   </ion-item>
 
   <ion-item>
+    <ion-label position="stacked">Etiquetas</ion-label>
+  </ion-item>
+  <ion-chip *ngFor="let label of report.labels" color="{{label.color}}">
+    <ion-icon name="{{label.icon}}" color="{{label.color}}"></ion-icon>
+    <ion-label>{{label.label}}</ion-label>
+    <ion-icon name="close" (click)="removeLabel(label.label)"></ion-icon>
+  </ion-chip>
+
+  <ion-item>
     <ion-label>Archivos</ion-label>
     <ion-input type="hidden" [(ngModel)]="report.image"></ion-input>
     <img [src]="report.image">
   </ion-item>
-  <ion-button color="primary" expand="full" (click)="selectImage()"><ion-icon name="image" slot="start"></ion-icon>Seleccionar imagen</ion-button>
+  <ion-button color="primary" expand="full" (click)="showActionSheet()">
+    <ion-icon name="image" slot="start"></ion-icon>Seleccionar imagen
+  </ion-button>
 
   <div id="mapid"></div>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button>
+    <ion-fab-button (click)="saveReport()">
       <ion-icon name="save"></ion-icon>
     </ion-fab-button>
   </ion-fab>

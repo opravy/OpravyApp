@@ -19,6 +19,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment';
 
 import { Camera } from "@ionic-native/camera/ngx";
+import { ImagePicker } from "@ionic-native/image-picker/ngx";
 
 @NgModule({
   declarations: [AppComponent],
@@ -37,6 +38,7 @@ import { Camera } from "@ionic-native/camera/ngx";
   providers: [
     Camera,
     StatusBar,
+    ImagePicker,
     SplashScreen,
     AngularFireAuth,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }

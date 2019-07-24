@@ -1,18 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { Geolocation } from "@ionic-native/geolocation";
 import * as L from 'leaflet'
-import { AlertController, LoadingController, ActionSheetController } from '@ionic/angular';
+import { AlertController, LoadingController, ActionSheetController, NavController } from '@ionic/angular';
 import { Report } from "../../models/report.model";
+import { Label } from "../../models/label.model";
 import { DataService } from 'src/app/services/data.service';
-import { ImageService } from 'src/app/services/image.service';
-import { AngularFireUploadTask } from '@angular/fire/storage';
+import { ImagePicker } from "@ionic-native/image-picker/ngx";
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+import { image } from './image'
 
 @Component({
   selector: 'app-agregar-reporte',
   templateUrl: './agregar-reporte.page.html',
   styleUrls: ['./agregar-reporte.page.scss'],
-  providers: [DataService, ImageService]
+  providers: [DataService]
 })
 export class AgregarReportePage implements OnInit {
 
@@ -22,7 +23,32 @@ export class AgregarReportePage implements OnInit {
     title: '',
     description: '',
     priority: 0,
-    image: '',
+    labels: [{
+      label: 'Elctricidad',
+      color: 'warning',
+      icon: 'flash'
+    },
+    {
+      label: 'Drenajes',
+      color: 'primary',
+      icon: 'water'
+    },
+    {
+      label: 'Carreteras',
+      color: 'success',
+      icon: 'car'
+    },
+    {
+      label: 'Infraestructura',
+      color: 'tertiary',
+      icon: 'business'
+    },
+    {
+      label: 'Otros',
+      color: 'black',
+      icon: 'hammer'
+    }],
+    image: image,
     location: {
       latitude: this.ltd,
       longitude: this.lng
@@ -35,11 +61,10 @@ export class AgregarReportePage implements OnInit {
     private alert: AlertController,
     private loading: LoadingController,
     private actionSheet: ActionSheetController,
+    private imagePicker: ImagePicker,
     private _dataService: DataService,
-    private _imageService: ImageService,
-    private task: AngularFireUploadTask,
     private camera: Camera,
-    private imagePicker
+    private nav: NavController
   ) { }
 
   ngOnInit() {
@@ -90,8 +115,9 @@ export class AgregarReportePage implements OnInit {
     await actionSheet.present();
   }
 
+  //MAP CODE
   loadMap(latitude, longitude) {
-    var mymap = L.map('mapid').setView([latitude, longitude], 13);
+    var mymap = L.map('mapid').setView([latitude, longitude], 17);
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiamNoaWNvaiIsImEiOiJjanlkbmhhYmYwcmxwM2VtZms3Zm9yZ2duIn0.o84D0XBR-Noe5ulUFXHJdA', {
       attribution: 'Opravy',
       maxZoom: 18,
@@ -112,24 +138,15 @@ export class AgregarReportePage implements OnInit {
     mymap.on('click', onMapClick);
   }
 
-  async saveReport() {
-    const loading = await this.loading.create({
-      spinner: 'circles',
-      message: 'Guardando...'
-    })
-    await loading.present();
-
-    this._dataService.uploadImage(this.report.image).then((result: any) => {
-      this.task = result;
-      let uploadedImage = result.downloadURL;
-      this.report.image = uploadedImage;
-
-      this._dataService.addReport(this.report).then((data) => {
-        this.loading.dismiss();
-      });
-    });
+  removeLabel(label) {
+    for (let i = 0; i < this.report.labels.length; i++) {
+      if (this.report.labels[i].label === label) {
+        this.report.labels.splice(i, 1);
+      }
+    }
   }
 
+  //IMAGE CODE
   async captureImage() {
     const options: CameraOptions = {
       quality: 100,
@@ -143,7 +160,7 @@ export class AgregarReportePage implements OnInit {
   }
 
   async takePicture() {
-    const base64 = await this.captureImage();
+    const base64: string = await this.captureImage();
     this.report.image = base64;
   }
 
@@ -159,7 +176,9 @@ export class AgregarReportePage implements OnInit {
           }).then(
             (results) => {
               for (var i = 0; i < results.length; i++) {
-                this._dataService.uploadImage(results[i]);
+                this.encodeImageUri(result[i], (image64) => {
+                  this.report.image = image64;
+                })
               }
             }, (err) => console.log(err)
           );
@@ -169,4 +188,32 @@ export class AgregarReportePage implements OnInit {
       });
   }
 
+  encodeImageUri(imageUri, callback) {
+    var c = document.createElement('canvas');
+    var ctx = c.getContext("2d");
+    var img = new Image();
+    img.onload = function () {
+      var aux:any = this;
+      c.width = aux.width;
+      c.height = aux.height;
+      ctx.drawImage(img, 0, 0);
+      var dataURL = c.toDataURL("image/jpeg");
+      callback(dataURL);
+    };
+    img.src = imageUri;
+  }
+
+  //FIREBASE CODE
+  async saveReport() {
+    const loading = await this.loading.create({
+      spinner: 'circles',
+      message: 'Guardando...'
+    })
+    await loading.present();
+
+    this._dataService.addReport(this.report).then((data) => {
+      this.loading.dismiss();
+      this.nav.back();
+    });
+  }
 }

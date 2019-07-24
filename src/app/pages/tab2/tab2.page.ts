@@ -17,6 +17,7 @@ export class Tab2Page implements OnInit {
   ngOnInit() {
     this._dataService.getReports().subscribe(res => {
       this.reports = res;
+      console.log(this.reports);
     });
   }
 
