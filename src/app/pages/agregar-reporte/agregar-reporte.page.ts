@@ -3,7 +3,6 @@ import { Geolocation } from "@ionic-native/geolocation";
 import * as L from 'leaflet'
 import { AlertController, LoadingController, ActionSheetController, NavController } from '@ionic/angular';
 import { Report } from "../../models/report.model";
-import { Label } from "../../models/label.model";
 import { DataService } from 'src/app/services/data.service';
 import { ImagePicker } from "@ionic-native/image-picker/ngx";
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
@@ -17,8 +16,10 @@ import { image } from './image'
 })
 export class AgregarReportePage implements OnInit {
 
-  ltd: number = 14.634915;
-  lng: number = -90.506882;
+  private  ltd: number = 14.634915;
+  private lng: number = -90.506882;
+  private latLong;
+
   private report: Report = {
     title: '',
     description: '',
@@ -85,7 +86,7 @@ export class AgregarReportePage implements OnInit {
       header: header,
       message: message,
       buttons: [buttons]
-    })
+    });
   }
 
   async showActionSheet() {
@@ -193,7 +194,7 @@ export class AgregarReportePage implements OnInit {
     var ctx = c.getContext("2d");
     var img = new Image();
     img.onload = function () {
-      var aux:any = this;
+      var aux: any = this;
       c.width = aux.width;
       c.height = aux.height;
       ctx.drawImage(img, 0, 0);
@@ -211,6 +212,9 @@ export class AgregarReportePage implements OnInit {
     })
     await loading.present();
 
+    this.report.location.longitude = this.lng;
+    this.report.location.latitude = this.ltd;
+    
     this._dataService.addReport(this.report).then((data) => {
       this.loading.dismiss();
       this.nav.back();

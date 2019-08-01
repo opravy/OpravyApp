@@ -30,7 +30,20 @@ export class DataService {
     );
   }
 
-  getReports() {
+  getReports(minLng, maxLng, minLtd, maxLtd) {
+    this.reportsCollection = this.db.collection('Reports', ref => ref.where('location.latitude', '>=', minLtd)
+    .where('location.latitude', '<=', maxLtd));
+
+    this.reports = this.reportsCollection.snapshotChanges().pipe(
+      map(actions => {
+        return actions.map(a => {
+          const data = a.payload.doc.data();
+          const id = a.payload.doc.id;
+          return { id, ...data };
+        });
+      })
+    )
+
     return this.reports;
   }
 
@@ -39,7 +52,7 @@ export class DataService {
   }
 
   uploadImage(image) {
-    const filePath = `report_image_${ new Date().getTime() }.jpg`
+    const filePath = `report_image_${new Date().getTime()}.jpg`
     image = 'data:image/jpg;base64,' + image;
     return this.afStorage.ref(filePath).putString(image, 'data_url');
   }
