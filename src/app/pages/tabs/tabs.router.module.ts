@@ -26,6 +26,15 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'reciclaje',
+        children: [
+          {
+            path: '',
+            loadChildren: '../tab4/tab4.module#Tab4PageModule'
+          }
+        ]
+      },
+      {
         path: 'mi-cuenta',
         children: [
           {

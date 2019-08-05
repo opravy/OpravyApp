@@ -1,24 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { Geolocation } from "@ionic-native/geolocation";
 import * as L from 'leaflet'
-import { AlertController, LoadingController, ActionSheetController, NavController } from '@ionic/angular';
+import { AlertController, LoadingController, ActionSheetController, NavController, SelectValueAccessor } from '@ionic/angular';
 import { Report } from "../../models/report.model";
-import { DataService } from 'src/app/services/data.service';
+import { ReportService } from 'src/app/services/report.service';
 import { ImagePicker } from "@ionic-native/image-picker/ngx";
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
-import { image } from './image'
+import { image } from './image';
 
 @Component({
   selector: 'app-agregar-reporte',
   templateUrl: './agregar-reporte.page.html',
   styleUrls: ['./agregar-reporte.page.scss'],
-  providers: [DataService]
+  providers: [ReportService]
 })
 export class AgregarReportePage implements OnInit {
-
-  private  ltd: number = 14.634915;
-  private lng: number = -90.506882;
-  private latLong;
 
   private report: Report = {
     title: '',
@@ -51,8 +47,8 @@ export class AgregarReportePage implements OnInit {
     }],
     image: image,
     location: {
-      latitude: this.ltd,
-      longitude: this.lng
+      latitude: 0,
+      longitude: 0
     },
     status: 'pending'
   };
@@ -63,7 +59,7 @@ export class AgregarReportePage implements OnInit {
     private loading: LoadingController,
     private actionSheet: ActionSheetController,
     private imagePicker: ImagePicker,
-    private _dataService: DataService,
+    private _dataService: ReportService,
     private camera: Camera,
     private nav: NavController
   ) { }
@@ -71,9 +67,9 @@ export class AgregarReportePage implements OnInit {
   ngOnInit() {
     Geolocation.getCurrentPosition()
       .then(res => {
-        this.ltd = res.coords.latitude;
-        this.lng = res.coords.longitude;
-        this.loadMap(this.ltd, this.lng);
+        this.report.location.latitude = res.coords.latitude;
+        this.report.location.longitude = res.coords.longitude;
+        this.loadMap(this.report.location.latitude, this.report.location.longitude);
       })
       .catch(error => {
         this.showAlert('Location', 'Unable to find your current location', 'Try again');
@@ -129,11 +125,15 @@ export class AgregarReportePage implements OnInit {
     var marker = L.marker([latitude, longitude]).addTo(mymap);
 
     function onMapClick(e) {
+
       if (marker !== null) {
         mymap.removeLayer(marker);
       }
 
       marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(mymap);
+
+      document.getElementById('latitude').innerText = e.latlng.lat;
+      document.getElementById('longitude').innerText = e.latlng.lng;
     }
 
     mymap.on('click', onMapClick);
@@ -212,9 +212,17 @@ export class AgregarReportePage implements OnInit {
     })
     await loading.present();
 
-    this.report.location.longitude = this.lng;
-    this.report.location.latitude = this.ltd;
-    
+    if (!isNaN(parseFloat(document.getElementById('latitude').textContent))) {
+      this.report.location.latitude = parseFloat(document.getElementById('latitude').textContent);
+    }
+
+    if (!isNaN(parseFloat(document.getElementById('longitude').textContent))) {
+      this.report.location.longitude = parseFloat(document.getElementById('longitude').textContent);
+    }
+
+    console.log(this.report.location.latitude);
+    console.log(this.report.location.longitude);
+
     this._dataService.addReport(this.report).then((data) => {
       this.loading.dismiss();
       this.nav.back();

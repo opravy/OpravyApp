@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Reciclaje
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="!reports || reports.length == 0">
+    <div *ngFor="let i of [0, 1, 2]" padding>
+      <ion-skeleton-text></ion-skeleton-text>
+      <p>
+        <ion-skeleton-text class="fake-skeleton"></ion-skeleton-text>
+      </p>
+    </div>
+  </ng-container>
+
+  <ion-card *ngFor="let report of reports">
+    <img [src]="report.image" />
+    <ion-card-header>
+      <ion-card-title>{{report.material}}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      {{report.address}}
+    </ion-card-content>
+
+    <ion-item>
+      <ion-chip color="primary">
+        <ion-icon name="cube" color="primary"></ion-icon>
+        <ion-label>{{report.aproxWeight}} {{report.measurement}}</ion-label>
+      </ion-chip>
+
+      <ion-chip *ngIf="report.type === 'Donación'" color="success">
+        <ion-icon name="cash" color="success"></ion-icon>
+        <ion-label>Donación</ion-label>
+      </ion-chip>
+      <ion-chip *ngIf="report.type === 'Venta'" color="danger">
+        <ion-icon name="cash" color="danger"></ion-icon>
+        <ion-label>Venta</ion-label>
+      </ion-chip>
+    </ion-item>
+  </ion-card>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button routerLink="/add-recycling-report" routerDirection="forward">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

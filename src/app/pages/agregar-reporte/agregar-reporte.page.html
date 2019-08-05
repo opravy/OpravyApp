@@ -37,7 +37,7 @@
   </ion-chip>
 
   <ion-item>
-    <ion-label>Archivos</ion-label>
+    <ion-label>Imagen</ion-label>
     <ion-input type="hidden" [(ngModel)]="report.image"></ion-input>
     <img [src]="report.image">
   </ion-item>
@@ -45,12 +45,9 @@
     <ion-icon name="image" slot="start"></ion-icon>Seleccionar imagen
   </ion-button>
 
-  <ion-item>
-    <ion-input [(ngModel)]="ltd"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-input [(ngModel)]="lng"></ion-input>
-  </ion-item>
+  <ion-input type="hidden" id="latitude"></ion-input>
+  <ion-input type="hidden" id="longitude"></ion-input>
+
   <div id="mapid"></div>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">

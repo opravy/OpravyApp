@@ -1,0 +1,76 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button routerLink="/opravy/reciclaje" routerDirection="backward"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Agregar Reporte de Reciclaje</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding fullscreen>
+  <ion-item>
+    <ion-label position="floating">Material</ion-label>
+    <ion-select [(ngModel)]="recycleReport.material" placeholder="Seleccione uno">
+      <ion-select-option value="Aceite">Aceite</ion-select-option>
+      <ion-select-option value="Baterías">Baterías</ion-select-option>
+      <ion-select-option value="Cartón">Cartón</ion-select-option>
+      <ion-select-option value="Electrónicos">Electrónicos</ion-select-option>
+      <ion-select-option value="Metales">Metales</ion-select-option>
+      <ion-select-option value="Neumáticos">Neumáticos</ion-select-option>
+      <ion-select-option value="Papel">Papel</ion-select-option>
+      <ion-select-option value="Plástico">Plástico</ion-select-option>
+      <ion-select-option value="Vidrio">Vidrio</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Tipo</ion-label>
+    <ion-select [(ngModel)]="recycleReport.type" placeholder="Seleccione uno">
+      <ion-select-option value="Donación">Donación</ion-select-option>
+      <ion-select-option value="Venta">Venta</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Peso aproximado</ion-label>
+
+    <ion-row>
+      <ion-col>
+        <ion-select [(ngModel)]="recycleReport.measurement" placeholder="Seleccione uno">
+          <ion-select-option *ngIf="recycleReport.material != 'Aceite' && recycleReport.material != 'Neumáticos'" value="g">g</ion-select-option>
+          <ion-select-option *ngIf="recycleReport.material != 'Aceite' && recycleReport.material != 'Neumáticos'" value="kg">kg</ion-select-option>
+          <ion-select-option *ngIf="recycleReport.material != 'Aceite' && recycleReport.material != 'Neumáticos'" value="oz">oz</ion-select-option>
+          <ion-select-option *ngIf="recycleReport.material != 'Aceite' && recycleReport.material != 'Neumáticos'" value="lb">lb</ion-select-option>
+          <ion-select-option *ngIf="recycleReport.material === 'Neumáticos' || recycleReport.material === 'Baterías'" value="u">u</ion-select-option>
+          <ion-select-option *ngIf="recycleReport.material === 'Aceite'" value="ml">ml</ion-select-option>
+          <ion-select-option *ngIf="recycleReport.material === 'Aceite'" value="l">l</ion-select-option>
+        </ion-select>
+      </ion-col>
+      <ion-col>
+        <ion-input type="number" [(ngModel)]="recycleReport.aproxWeight" style="width: 50%"></ion-input>
+      </ion-col>
+    </ion-row>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Dirección</ion-label>
+    <ion-textarea [(ngModel)]="recycleReport.address" autoGrow="true" spellcheck="true" wrap="soft"
+      class="note-content">
+    </ion-textarea>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Archivos</ion-label>
+    <ion-input type="hidden" [(ngModel)]="recycleReport.image"></ion-input>
+    <img [src]="recycleReport.image">
+  </ion-item>
+  <ion-button color="primary" expand="full" (click)="showActionSheet()">
+    <ion-icon name="image" slot="start"></ion-icon>Seleccionar imagen
+  </ion-button>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="saveRecycleReport()">
+      <ion-icon name="save"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
