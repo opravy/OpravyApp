@@ -1,34 +1,82 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AuthentificationService } from 'src/app/services/authentification.service';
-import { Chart } from "chart.js";
+import { Chart, ChartDataSets } from "chart.js";
+import { ReportService } from 'src/app/services/report.service';
+import { Report } from 'src/app/models/report.model';
 
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss']
 })
-export class Tab1Page implements OnInit{
-  @ViewChild("barCanvas") barCanvas:ElementRef;
-  @ViewChild("doughnutCanvas") doughnutCanvas: ElementRef;
-  @ViewChild("lineCanvas") lineCanvas: ElementRef;
+export class Tab1Page implements OnInit {
+  // labels=[
+  //   {value:0, name:'Infraestructura'},
+  //   {value:1, name:'Drenajes'},
+  //   {value:2, name:'Carreteras'},
+  //   {value:3, name:'Electricidad'},
+  //   {value:4, name:'Otros'}
+  // ]
 
+  @ViewChild("barCanvas") barCanvas: ElementRef;
   private barChart: Chart;
-  private doughnutChart: Chart;
-  private lineChart: Chart;
-  
+  private reports: Report[];
+
+  //chartData=null;
+
   constructor(
-    private authService: AuthentificationService
-  ) {}
-  
-  ngOnInit(){
+    private authService: AuthentificationService,
+    private _reportDataService: ReportService
+  ) { }
+
+  // getReportValues(){
+  //   this._reportDataService.getReports().subscribe(res => {
+  //     this.chartData = res;
+  //     console.log(this.chartData);
+  //     return this.chartData
+  //   });
+  // }
+
+
+  ngOnInit() {
+    let countC = 0
+    let countE = 0
+    let countO = 0
+    let countD = 0
+    let countI = 0
+    this.createChart();
+
+    this._reportDataService.reportsGraphics().subscribe(response => {
+      this.reports = response
+      this.reports.forEach(element => {
+        element.labels.forEach(element => {
+          if (element.label === 'Carreteras') {
+            countC += +1
+          }
+          else if (element.label === 'Elctricidad') {
+            countE += +1
+          } else if (element.label === 'Otros') {
+            countO += +1
+          } else if (element.label === 'Drenajes') {
+            countD += +1
+          } else if (element.label === 'Infraestructura') {
+            countI += +1
+          }
+        });
+      });
+      console.log(countC, countD, countE, countI, countO)
+    })
+
+  }
+  createChart() {
     this.barChart = new Chart(this.barCanvas.nativeElement, {
       type: "bar",
       data: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        labels: ["Carreteras", "Infraestructura", "Drenajes", "Electricidad", "Otros"],
         datasets: [
           {
             label: "# of Votes",
-            data: [12, 19, 3, 5, 2, 3],
+            data: [0, 0, 0, 0, 0],
             backgroundColor: [
               "rgba(255, 99, 132, 0.2)",
               "rgba(54, 162, 235, 0.2)",
@@ -61,63 +109,10 @@ export class Tab1Page implements OnInit{
         }
       }
     });
-
-    this.doughnutChart = new Chart(this.doughnutCanvas.nativeElement, {
-      type: "doughnut",
-      data: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-        datasets: [
-          {
-            label: "# of Votes",
-            data: [12, 19, 3, 5, 2, 3],
-            backgroundColor: [
-              "rgba(255, 99, 132, 0.2)",
-              "rgba(54, 162, 235, 0.2)",
-              "rgba(255, 206, 86, 0.2)",
-              "rgba(75, 192, 192, 0.2)",
-              "rgba(153, 102, 255, 0.2)",
-              "rgba(255, 159, 64, 0.2)"
-            ],
-            hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#FF6384", "#36A2EB", "#FFCE56"]
-          }
-        ]
-      }
-    });
-
-    this.lineChart = new Chart(this.lineCanvas.nativeElement, {
-      type: "line",
-      data: {
-        labels: ["January", "February", "March", "April", "May", "June", "July"],
-        datasets: [
-          {
-            label: "My First dataset",
-            fill: false,
-            lineTension: 0.1,
-            backgroundColor: "rgba(75,192,192,0.4)",
-            borderColor: "rgba(75,192,192,1)",
-            borderCapStyle: "butt",
-            borderDash: [],
-            borderDashOffset: 0.0,
-            borderJoinStyle: "miter",
-            pointBorderColor: "rgba(75,192,192,1)",
-            pointBackgroundColor: "#fff",
-            pointBorderWidth: 1,
-            pointHoverRadius: 5,
-            pointHoverBackgroundColor: "rgba(75,192,192,1)",
-            pointHoverBorderColor: "rgba(220,220,220,1)",
-            pointHoverBorderWidth: 2,
-            pointRadius: 1,
-            pointHitRadius: 10,
-            data: [65, 59, 80, 81, 56, 55, 40],
-            spanGaps: false
-          }
-        ]
-      }
-    });
+    //this.barChart.data= this.reportsByLabel()
+    //this.barChart.update();
+    // this.reportsByLabel()
   }
-
-
-
 
   cerrarSesion() {
     this.authService.logOut()

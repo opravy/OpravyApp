@@ -35,6 +35,7 @@ export class ReportService {
         return actions.map(a => {
           const data = a.payload.doc.data();
           const id = a.payload.doc.id;
+
           return { id, ...data };
         });
       })
@@ -45,5 +46,21 @@ export class ReportService {
 
   addReport(report: Report) {
     return this.reportsCollection.add(report);
+  }
+
+  reportsGraphics(){
+
+    this.reportsCollection = this.db.collection('Reports', ref => ref.where('status', '==', 'pending'));
+    this.reports = this.reportsCollection.snapshotChanges().pipe(
+      map(actions => {
+        return actions.map(a => {
+          const data = a.payload.doc.data();
+          const id = a.payload.doc.id;
+          return { id, ...data};
+        });
+      })
+    );
+
+    return this.reports
   }
 }
