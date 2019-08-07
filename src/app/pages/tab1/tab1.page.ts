@@ -21,7 +21,11 @@ export class Tab1Page implements OnInit {
   @ViewChild("barCanvas") barCanvas: ElementRef;
   private barChart: Chart;
   private reports: Report[];
-
+  private countC=0
+  private countD=0
+  private countI=0
+  private countE=0
+  private countO=0
   //chartData=null;
 
   constructor(
@@ -39,36 +43,35 @@ export class Tab1Page implements OnInit {
 
 
   ngOnInit() {
-    let countC = 0
-    let countE = 0
-    let countO = 0
-    let countD = 0
-    let countI = 0
-    this.createChart();
-
     this._reportDataService.reportsGraphics().subscribe(response => {
       this.reports = response
       this.reports.forEach(element => {
         element.labels.forEach(element => {
           if (element.label === 'Carreteras') {
-            countC += +1
+            this.countC += +1
           }
           else if (element.label === 'Elctricidad') {
-            countE += +1
+            this.countE += +1
           } else if (element.label === 'Otros') {
-            countO += +1
+            this.countO += +1
           } else if (element.label === 'Drenajes') {
-            countD += +1
+            this.countD += +1
           } else if (element.label === 'Infraestructura') {
-            countI += +1
+            this.countI += +1
           }
         });
       });
-      console.log(countC, countD, countE, countI, countO)
+      console.log(this.countC, this.countD, this.countE, this.countI, this.countO)
+      this.createChart(this.countC,this.countI,this.countD,this.countE,this.countO)
     })
-
+    
   }
-  createChart() {
+
+
+    //create chart
+    
+  createChart(countC,countI,countD,countE,countO) {
+    //console.log(this.countC)
     this.barChart = new Chart(this.barCanvas.nativeElement, {
       type: "bar",
       data: {
@@ -76,7 +79,7 @@ export class Tab1Page implements OnInit {
         datasets: [
           {
             label: "# of Votes",
-            data: [0, 0, 0, 0, 0],
+            data: [countC,countI,countD,countE,countO],
             backgroundColor: [
               "rgba(255, 99, 132, 0.2)",
               "rgba(54, 162, 235, 0.2)",
