@@ -3,6 +3,8 @@ import { AuthentificationService } from 'src/app/services/authentification.servi
 import { Chart, ChartDataSets } from "chart.js";
 import { ReportService } from 'src/app/services/report.service';
 import { Report } from 'src/app/models/report.model';
+import { RecycleReport } from "src/app/models/recycle.model";
+import { RecycleReportService } from 'src/app/services/recycle-report.service';
 
 @Component({
   selector: 'app-tab1',
@@ -10,37 +12,28 @@ import { Report } from 'src/app/models/report.model';
   styleUrls: ['tab1.page.scss']
 })
 export class Tab1Page implements OnInit {
-  // labels=[
-  //   {value:0, name:'Infraestructura'},
-  //   {value:1, name:'Drenajes'},
-  //   {value:2, name:'Carreteras'},
-  //   {value:3, name:'Electricidad'},
-  //   {value:4, name:'Otros'}
-  // ]
-
   @ViewChild("barCanvas") barCanvas: ElementRef;
+  @ViewChild("doughnutCanvas") doughnutCanvas: ElementRef;
   private barChart: Chart;
+  private doughnutChart: Chart;
   private reports: Report[];
+  private recycleReports:RecycleReport[];
   private countC=0
   private countD=0
   private countI=0
   private countE=0
   private countO=0
-  //chartData=null;
+  private countA=0
+  private countB=0
+  private countCA=0
+  private countEl=0
+  private countM=0
 
   constructor(
     private authService: AuthentificationService,
-    private _reportDataService: ReportService
+    private _reportDataService: ReportService,
+    private _reportRecycleService:RecycleReportService
   ) { }
-
-  // getReportValues(){
-  //   this._reportDataService.getReports().subscribe(res => {
-  //     this.chartData = res;
-  //     console.log(this.chartData);
-  //     return this.chartData
-  //   });
-  // }
-
 
   ngOnInit() {
     this._reportDataService.reportsGraphics().subscribe(response => {
@@ -58,27 +51,43 @@ export class Tab1Page implements OnInit {
             this.countD += +1
           } else if (element.label === 'Infraestructura') {
             this.countI += +1
-          }
+          }   
         });
       });
-      console.log(this.countC, this.countD, this.countE, this.countI, this.countO)
       this.createChart(this.countC,this.countI,this.countD,this.countE,this.countO)
     })
-    
+
+    this._reportRecycleService.getRecycleReports().subscribe(response=>{
+      this.recycleReports=response
+      this.recycleReports.forEach(element => {
+          if (element.material === 'Aceite') {
+            this.countA += +1
+          }
+          else if (element.material === 'Baterías') {
+            this.countB += +1
+          } else if (element.material === 'Cartón') {
+            this.countCA += +1
+          } else if (element.material === 'Electrónicos') {
+            this.countEl += +1
+          } else if (element.material === 'Metales') {
+            this.countM += +1
+          }   
+      });
+      console.log(this.countA,this.countB,this.countCA,this.countEl,this.countM)
+      this.createChartRecycle(this.countA,this.countB,this.countCA,this.countEl,this.countM)
+    })
   }
 
 
     //create chart
-    
   createChart(countC,countI,countD,countE,countO) {
-    //console.log(this.countC)
     this.barChart = new Chart(this.barCanvas.nativeElement, {
       type: "bar",
       data: {
         labels: ["Carreteras", "Infraestructura", "Drenajes", "Electricidad", "Otros"],
         datasets: [
           {
-            label: "# of Votes",
+            label:"Carreteras",
             data: [countC,countI,countD,countE,countO],
             backgroundColor: [
               "rgba(255, 99, 132, 0.2)",
@@ -112,9 +121,29 @@ export class Tab1Page implements OnInit {
         }
       }
     });
-    //this.barChart.data= this.reportsByLabel()
-    //this.barChart.update();
-    // this.reportsByLabel()
+  }
+
+  createChartRecycle(countA,countB,countCA,countEl,countM){
+    this.doughnutChart = new Chart(this.doughnutCanvas.nativeElement, {
+      type: "doughnut",
+      data: {
+        labels: ["Aceite", "Baterías", "Cartón", "Electrónicos", "Metales"],
+        datasets: [
+          {
+            label: "# of Votes",
+            data: [countA,countB, countCA, countEl, countM],
+            backgroundColor: [
+              "rgba(255, 99, 132, 0.2)",
+              "rgba(54, 162, 235, 0.2)",
+              "rgba(255, 206, 86, 0.2)",
+              "rgba(75, 192, 192, 0.2)",
+              "rgba(153, 102, 255, 0.2)",
+            ],
+            hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#FF6384", "#36A2EB"]
+          }
+        ]
+      }
+    });
   }
 
   cerrarSesion() {
