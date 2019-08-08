@@ -52,4 +52,7 @@ export class AuthentificationService {
   public logOut() {
     this.firebaseAuth.auth.signOut();
   }
+  public userDetails(){
+    return firebase.auth().currentUser;
+  }
 }
