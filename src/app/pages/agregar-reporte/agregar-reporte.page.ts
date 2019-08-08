@@ -92,19 +92,19 @@ export class AgregarReportePage implements OnInit {
         text: 'Tomar foto',
         icon: 'camera',
         handler: () => {
-          this.takePicture();
+          this.captureImage();
         }
       }, {
         text: 'Seleccionar de la galería',
         icon: 'image',
         handler: () => {
-          this.openImagePicker();
+          this.PickerImage();
         }
       }, {
         text: 'Cancelar',
         icon: 'close',
         role: 'cancel',
-        handler: () => {
+        handler: () => { 
           console.log('Cancel clicked');
         }
       }]
@@ -158,11 +158,30 @@ export class AgregarReportePage implements OnInit {
     }
 
     return await this.camera.getPicture(options)
+    .then((ImageData)=>{
+      this.report.image  =  'data:image/jpeg;base64,' + ImageData;
+    })
   }
 
-  async takePicture() {
+ /*  async takePicture() {
     const base64: string = await this.captureImage();
     this.report.image = base64;
+  } */
+
+  async PickerImage() {
+    const options: CameraOptions = {
+      quality: 100,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE,
+      sourceType: this.camera.PictureSourceType.SAVEDPHOTOALBUM
+    }
+
+    
+    return await this.camera.getPicture(options)
+    .then((ImageData)=>{
+      this.report.image  =  'data:image/jpeg;base64,' + ImageData;
+    })
   }
 
   openImagePicker() {
