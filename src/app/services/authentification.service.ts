@@ -42,10 +42,10 @@ export class AuthentificationService {
       .auth
       .signInWithEmailAndPassword(email, password)
       .then(value => {
-        return { message: 'Inicio de sesion correcto!', content: value }
+        return { message: 'Success', content: value }
       })
       .catch(error => {
-        return { message: 'Algo salio mal!', content: error }
+        return { message: 'Error', content: error }
       });
   }
 

@@ -9,10 +9,16 @@
 <ion-content>
   <ng-container *ngIf="!reports || reports.length == 0">
     <div *ngFor="let i of [0, 1, 2]" padding>
-      <ion-skeleton-text></ion-skeleton-text>
-      <p>
-        <ion-skeleton-text class="fake-skeleton"></ion-skeleton-text>
-      </p>
+      <ion-card>
+        <ion-card-header>
+          <ion-skeleton-text></ion-skeleton-text>
+        </ion-card-header>
+        <ion-card-content>
+          <p>
+            <ion-skeleton-text class="fake-skeleton"></ion-skeleton-text>
+          </p>
+        </ion-card-content>
+      </ion-card>
     </div>
   </ng-container>
 
