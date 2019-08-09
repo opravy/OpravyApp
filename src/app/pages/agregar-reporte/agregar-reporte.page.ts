@@ -174,7 +174,7 @@ export class AgregarReportePage implements OnInit {
       destinationType: this.camera.DestinationType.DATA_URL,
       encodingType: this.camera.EncodingType.JPEG,
       mediaType: this.camera.MediaType.PICTURE,
-      sourceType: this.camera.PictureSourceType.SAVEDPHOTOALBUM
+      sourceType: this.camera.PictureSourceType.PHOTOLIBRARY
     }
 
     

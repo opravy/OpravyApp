@@ -52,13 +52,13 @@ export class AgregarReciclajePage implements OnInit {
         text: 'Tomar foto',
         icon: 'camera',
         handler: () => {
-          this.takePicture();
+          this.captureImage();
         }
       }, {
         text: 'Seleccionar de la galería',
         icon: 'image',
         handler: () => {
-          this.openImagePicker();
+          this.pickerImage();
         }
       }, {
         text: 'Cancelar',
@@ -83,12 +83,31 @@ export class AgregarReciclajePage implements OnInit {
     }
 
     return await this.camera.getPicture(options)
+    .then((ImageData)=>{
+      this.recycleReport.image  =  'data:image/jpeg;base64,' + ImageData;
+    })
   }
 
-  async takePicture() {
+
+  async pickerImage() {
+    const options: CameraOptions = {
+      quality: 100,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE,
+      sourceType: this.camera.PictureSourceType.PHOTOLIBRARY
+    }
+
+    return await this.camera.getPicture(options)
+    .then((ImageData)=>{
+      this.recycleReport.image  =  'data:image/jpeg;base64,' + ImageData;
+    })
+  }
+
+ /*  async takePicture() {
     const base64: string = await this.captureImage();
     this.recycleReport.image = base64;
-  }
+  } */
 
   openImagePicker() {
     this.imagePicker.hasReadPermission().then(
